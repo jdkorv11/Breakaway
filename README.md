@@ -32,11 +32,6 @@ To gain experience with game development principles and have fun in the process
   - [ ] Speed up ball
 - [ ] Player can catch lives and power-ups with bumper
 - [ ] Ball speed & direction can be changed by bumper movement 
-- [ ] Pause game
-- [ ] Scoring
-- [ ] Sound
-  - [ ] Sound Effects
-  - [ ] Music
 
 **Menus**
 - [ ] Game launches to Main Menu
@@ -58,6 +53,14 @@ To gain experience with game development principles and have fun in the process
   - [ ] Quit
 - [ ] High Scores
 - [ ] Exit
+
+**Other**
+- [ ] Pause game
+- [ ] Scoring
+- [ ] Sound
+  - [ ] Sound Effects
+  - [ ] Music
+- [ ] Resizeable window
 
 ### Authors:
 - jdkorv11
