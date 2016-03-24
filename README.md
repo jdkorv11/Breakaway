@@ -2,7 +2,7 @@
 ### Overview
 A variant of the atari game Breakaway IV
 ### Purpose
-To gain experience with gave development principles and have fun in the process
+To gain experience with game development principles and have fun in the process
 ### Goals
 **Core Gameplay**
   - [ ] Allow FPS to drop while maintaining game tick rate
