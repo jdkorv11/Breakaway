@@ -34,6 +34,9 @@ To gain experience with game development principles and have fun in the process
 - [ ] Ball speed & direction can be changed by bumper movement 
 - [ ] Pause game
 - [ ] Scoring
+- [ ] Sound
+  - [ ] Sound Effects
+  - [ ] Music
 
 **Menus**
 - [ ] Game launches to Main Menu
@@ -46,7 +49,8 @@ To gain experience with game development principles and have fun in the process
   - [ ] Set number of lives to start with
   - [ ] Change difficulty
   - [ ] Adjust Volume 
-    - [ ] Sound effects
+    - [ ] Master volume
+    - [ ] Sound effects volume
     - [ ] Music volume
 - [ ] Pause Menu
   - [ ] Open Options
