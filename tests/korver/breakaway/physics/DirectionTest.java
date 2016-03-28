@@ -28,6 +28,7 @@ public class DirectionTest {
         Direction dSouthWest = new Direction(-1,-1);
         Direction dSouth = new Direction(0,-1);
         Direction dSouthEast = new Direction(1,-1);
+        Direction dZeroZero = new Direction (0,0);
 
         assertEquals(east, dEast.getDegrees());
         assertEquals(northEast, dNorthEast.getDegrees());
@@ -37,6 +38,7 @@ public class DirectionTest {
         assertEquals(southWest, dSouthWest.getDegrees());
         assertEquals(south, dSouth.getDegrees());
         assertEquals(southEast, dSouthEast.getDegrees());
+        assertEquals(north, dZeroZero.getDegrees());
 
     }
 
