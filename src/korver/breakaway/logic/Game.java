@@ -13,17 +13,22 @@ public class Game {
     private final int BOARD_WIDTH = 1500;
     private final int BOARD_HEIGHT = 840;
     private final int WALL_THICKNESS = 20;
-    private final int BUMPER_SPEED_LIMIT = 10;
+    private final int BUMPER_SPEED_LIMIT = 25;
     private final Bumper bumper;
+    private final InputHandler inputHandler;
 
     public Game() {
         bumper = new Bumper(new Point(0, 0));
         bumper.setLocation(new Point((int) ((BOARD_WIDTH / 2) - (bumper.getWidth() / 2)),
                                      (int) (BOARD_HEIGHT - bumper.getHeight())));
+
+        inputHandler = new InputHandler();
     }
 
     public void update() {
-
+        if (inputHandler.isBumperMove()){
+            submitBumperMove(inputHandler.getBumperStep());
+        }
     }
 
     public int getHeight() {
@@ -48,10 +53,27 @@ public class Game {
         } else if (move > BUMPER_SPEED_LIMIT) {
             move = BUMPER_SPEED_LIMIT;
         }
+
         Point futLocation = new Point(bumper.x + move, bumper.y);
-        if (!willCollideWithWall(bumper, futLocation)) {
-            bumper.setLocation(futLocation);
+
+        while (futLocation.x != bumper.x) {
+            if (!willCollideWithWall(bumper, futLocation)) {
+                bumper.setLocation(futLocation);
+            } else {
+                move = shrinkStep(move);
+                futLocation.x = bumper.x + move;
+            }
         }
+
+    }
+
+    private int shrinkStep(int step) {
+        if (step < 0) {
+            return step + 1;
+        } else if (step > 0) {
+            return step - 1;
+        }
+        return step;
 
     }
 
@@ -62,5 +84,9 @@ public class Game {
         boolean hitsRightWall = futureLocation.x + rect.width > BOARD_WIDTH;
 
         return (hitsLeftWall || hitsTopWall || hitsRightWall);
+    }
+
+    public InputHandler getInputHandler() {
+        return inputHandler;
     }
 }

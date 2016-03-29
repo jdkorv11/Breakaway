@@ -30,6 +30,6 @@ public class KeyboardListener implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {
-
+        handler.keyReleased(keyEvent.getKeyCode());
     }
 }

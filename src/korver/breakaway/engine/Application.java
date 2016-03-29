@@ -7,16 +7,14 @@ import korver.breakaway.logic.InputHandler;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
-import java.awt.Event;
-import java.awt.event.MouseEvent;
 
 /**
  * Created by jdkorv11 on 3/28/2016.
  */
 public class Application extends JFrame {
 
-    private static final int DEFAULT_FPS = 60;
     public static final long NANOSECONDS_PER_SECOND = 1000000000;
+    private static final int DEFAULT_FPS = 60;
     private GameDisplay gameView;
 
     public Application(Game game) {
@@ -29,12 +27,8 @@ public class Application extends JFrame {
         this.setResizable(true);
         this.setVisible(true);
 
-        this.addKeyListener(new KeyboardListener(new InputHandler(game)));
+        this.addKeyListener(new KeyboardListener(game.getInputHandler()));
 
-//        addWindowListener(this);
-//        pack();
-//        setResizable(true);
-//        setVisible(true);
     }
 
     public static void main(String args[]) {
