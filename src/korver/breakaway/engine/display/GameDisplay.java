@@ -1,8 +1,9 @@
 package korver.breakaway.engine.display;
 
-import korver.breakaway.engine.Game;
+import korver.breakaway.logic.Game;
+import sun.java2d.pipe.RenderingEngine;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 import java.awt.*;
 
 /**
@@ -11,31 +12,25 @@ import java.awt.*;
 public class GameDisplay extends JPanel {
 
     private Image dbImage;
-    private Graphics graphics;
+    private Graphics2D graphics;
 
     private int dispWidth;
     private int dispHeight;
-    private JFrame container;
+
+    private DrawingUtils drawingHelper;
 
     public GameDisplay(Game game) {
         super();
         dispWidth = game.getWidth();
         dispHeight = game.getHeight();
+
+        drawingHelper = new DrawingUtils();
         // get hold the content of the frame and set up the
         // resolution of the game
         setPreferredSize(new Dimension(dispWidth, dispHeight));
         setLayout(null);
         setDoubleBuffered(true);
         setIgnoreRepaint(true);
-
-        // create a frame to contain our game
-        // setup our canvas size and put it into the content of the frame
-        container = new JFrame("Breakaway");
-        container.setLayout(new BorderLayout());
-        container.add(this, BorderLayout.CENTER);
-        container.pack();
-        container.setResizable(true);
-        container.setVisible(true);
     }
 
     public void renderGame(Game game) {
@@ -45,7 +40,9 @@ public class GameDisplay extends JPanel {
                 System.out.println("dbImage is null");
                 return;
             } else {
-                graphics = dbImage.getGraphics();
+                graphics = (Graphics2D) dbImage.getGraphics();
+                graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                graphics.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
             }
         }
         // scale the image to the panel size
@@ -54,12 +51,13 @@ public class GameDisplay extends JPanel {
             dispWidth = getWidth();
             dbImage = dbImage.getScaledInstance(dispWidth, dispHeight, Image.SCALE_DEFAULT);
         }
+
         // clear the background
         graphics.setColor(Color.black);
         graphics.fillRect(0, 0, dispWidth, dispHeight);
 
         // draw game elements: the obstacles and the worm
-        DrawingUtils.drawGame(game, graphics);
+        drawingHelper.drawGame(game, graphics);
 
         graphics.setColor(Color.WHITE);
 //        graphics.setFont(font);

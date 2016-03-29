@@ -1,6 +1,6 @@
 package korver.breakaway.engine;
 
-import korver.breakaway.engine.display.GameDisplay;
+import korver.breakaway.logic.Game;
 
 import java.awt.*;
 import java.text.DecimalFormat;
@@ -22,7 +22,7 @@ public class Loop implements Runnable {
     // no. of frames that can be skipped in any one animation loop
     // i.e the games state is updated but not rendered
 
-    private GameDisplay gamePanel;
+    private Application displayApp;
 
     private static int NUM_FPS = 10;
     // number of FPS values stored to get an average
@@ -63,12 +63,11 @@ public class Loop implements Runnable {
 
     private Game game;
 
-    public Loop(long period) {
+    public Loop(long period, Application display, Game game) {
 //        wcTop = wc;
         // create game components
-        game = new Game();
-        gamePanel = new GameDisplay(game);
-
+        this.game = game;
+        this.displayApp = display;
         gameOver = false;
 
         this.period = period;
@@ -122,8 +121,7 @@ public class Loop implements Runnable {
 
         while (running) {
             gameUpdate();
-            gameRender(); // render the game to a buffer
-            gamePanel.paintScreen(); // draw the buffer on-screen
+            gameDisplay();
 
             afterTime = System.nanoTime();
             timeDiff = afterTime - beforeTime;
@@ -173,8 +171,10 @@ public class Loop implements Runnable {
         }
     }
 
-    private void gameRender() {
-        gamePanel.renderGame(game);
+    private void gameDisplay() {
+
+        displayApp.renderGame(game);
+        displayApp.paintScreen();
     }
 
 //    private void gameOverMessage(Graphics g)

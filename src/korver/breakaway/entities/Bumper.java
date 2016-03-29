@@ -7,11 +7,13 @@ import java.awt.*;
  */
 public class Bumper extends Rectangle{
 
-    private final int HEIGHT = 10;
+    private final int HEIGHT = 15;
     private final int WIDTH = 75;
 
     public Bumper(Point location) {
         super(location);
         super.setSize(new Dimension(WIDTH, HEIGHT));
     }
+
+
 }
