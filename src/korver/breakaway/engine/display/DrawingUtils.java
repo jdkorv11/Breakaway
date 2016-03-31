@@ -1,5 +1,6 @@
 package korver.breakaway.engine.display;
 
+import korver.breakaway.entities.Ball;
 import korver.breakaway.entities.Bumper;
 import korver.breakaway.logic.Game;
 
@@ -26,7 +27,12 @@ public class DrawingUtils {
         //drawWalls(graphics, gameHeight, gameWidth, wallThickness);
         // draw the bumper
         drawBumper(graphics, game.getBumper());
+        drawBall(graphics, game.getBall());
+    }
 
+    private void drawBall(Graphics graphics, Ball ball) {
+        graphics.setColor(Color.GRAY);
+        graphics.fillOval(ball.x, ball.y, ball.width, ball.height);
     }
 
     private void drawBumper(Graphics graphics, Bumper bumper) {

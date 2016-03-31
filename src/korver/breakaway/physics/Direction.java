@@ -52,6 +52,14 @@ public class Direction {
         return xVelocity;
     }
 
+    public void setRelXVelocity(int velocity){
+        xVelocity = velocity;
+    }
+
+    public void setRelYVelocity(int velocity){
+        yVelocity = velocity;
+    }
+
     public int getRelYVelocity() {
 
         return yVelocity;

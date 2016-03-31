@@ -1,9 +1,8 @@
 package korver.breakaway.engine;
 
 import korver.breakaway.engine.display.GameDisplay;
-import korver.breakaway.engine.input.KeyboardListener;
+import korver.breakaway.engine.input.KeyboardInput;
 import korver.breakaway.logic.Game;
-import korver.breakaway.logic.InputHandler;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
@@ -27,7 +26,8 @@ public class Application extends JFrame {
         this.setResizable(true);
         this.setVisible(true);
 
-        this.addKeyListener(new KeyboardListener(game.getInputHandler()));
+        this.addKeyListener(new KeyboardInput(game.getInputHandler()));
+        gameView.addMouseMotionListener(game.getInputHandler());
 
     }
 

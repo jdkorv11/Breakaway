@@ -9,11 +9,11 @@ import java.awt.event.KeyListener;
 /**
  * Created by jdkorv11 on 3/29/2016.
  */
-public class KeyboardListener implements KeyListener {
+public class KeyboardInput implements KeyListener {
 
     private InputHandler handler;
 
-    public KeyboardListener(InputHandler handler) {
+    public KeyboardInput(InputHandler handler) {
         this.handler = handler;
     }
 

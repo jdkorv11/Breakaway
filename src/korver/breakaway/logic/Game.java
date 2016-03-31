@@ -1,5 +1,7 @@
 package korver.breakaway.logic;
 
+import korver.breakaway.engine.Utilities;
+import korver.breakaway.entities.Ball;
 import korver.breakaway.entities.Bumper;
 
 import java.awt.Point;
@@ -13,22 +15,50 @@ public class Game {
     private final int BOARD_WIDTH = 1500;
     private final int BOARD_HEIGHT = 840;
     private final int WALL_THICKNESS = 20;
-    private final int BUMPER_SPEED_LIMIT = 25;
+    private final int BUMPER_SPEED_LIMIT = 40;
+    private final int DEFAULT_BALL_SPEED = 15;
     private final Bumper bumper;
+    private final Ball ball;
     private final InputHandler inputHandler;
 
     public Game() {
-        bumper = new Bumper(new Point(0, 0));
+        Point initializationPoint = new Point(0, 0);
+        bumper = new Bumper(initializationPoint);
         bumper.setLocation(new Point((int) ((BOARD_WIDTH / 2) - (bumper.getWidth() / 2)),
                                      (int) (BOARD_HEIGHT - bumper.getHeight())));
-
+        ball = new Ball(initializationPoint);
+        ball.setLocation(
+                new Point(bumper.x + (bumper.width / 2) - ball.width / 2, bumper.y - (int) (ball.height * 0.9)));
         inputHandler = new InputHandler();
     }
 
     public void update() {
-        if (inputHandler.isBumperMove()){
-            submitBumperMove(inputHandler.getBumperStep());
+        if (inputHandler.isBumperMove()) {
+            submitBumperMove(inputHandler.getBumperMove());
         }
+        if (inputHandler.isLaunchQueued()) {
+            attemptBallLaunch();
+        }
+        moveBall();
+    }
+
+    private void attemptBallLaunch() {
+        // get a random direction for the ball
+        int xVel = Utilities.randomWithRange(-4, 4);
+        int yVel = Utilities.randomWithRange(1, 5);
+        // set the direction to the ball
+        ball.getDirection().setRelXVelocity(xVel);
+        ball.getDirection().setRelYVelocity(yVel);
+        //set the ball's speed
+        ball.setSpeed(DEFAULT_BALL_SPEED);
+    }
+
+    private void moveBall() {
+        int dx = (int) (ball.getSpeed() * Math.cos(Math.toRadians(ball.getDirection().getDegrees())));
+        int dy = (int) (ball.getSpeed() * Math.sin(Math.toRadians(ball.getDirection().getDegrees())));
+
+        ball.x += dx;
+        ball.y -= dy; // subtract dy because positive direction needs to move toward negative coordinates
     }
 
     public int getHeight() {
@@ -45,6 +75,10 @@ public class Game {
 
     public Bumper getBumper() {
         return bumper;
+    }
+
+    public Ball getBall() {
+        return ball;
     }
 
     public void submitBumperMove(int move) {

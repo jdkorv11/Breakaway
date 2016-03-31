@@ -35,4 +35,5 @@ public class Ball extends Rectangle {
     public void setSpeed(int speed) {
         this.speed = speed;
     }
+
 }
