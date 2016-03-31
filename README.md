@@ -6,7 +6,7 @@ To gain experience with game development principles and have fun in the process
 ### Goals
 **Core Gameplay**
   - [x] Allow FPS to drop while maintaining game tick rate
-  - [ ] Player control of bumper
+  - [x] Player control of bumper
   - [ ] Ball physics of bouncing and falling off screen
   - [ ] Player launches ball 
   - [ ] Load a level with an arrangement of blocks to break
