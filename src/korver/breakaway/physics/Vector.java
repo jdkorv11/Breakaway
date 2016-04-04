@@ -3,20 +3,21 @@ package korver.breakaway.physics;
 /**
  * Created by jdkorv11 on 3/24/2016.
  */
-public class Direction {
+public class Vector {
 
     private static final int HORIZONTAL_RIGHT = 0;
-    private static final int VERTICAL_UP = 90;
+    private static final int VERTICAL_DOWN = 90;
     private static final int HORIZONTAL_LEFT = 180;
-    private static final int VERTICAL_DOWN = -90;
+    private static final int VERTICAL_UP = -90;
 
     private int xVelocity;
     private int yVelocity;
+    private int speed;
 
-    public Direction(int relXVelocity, int relYVelocity) {
-
+    public Vector(int relXVelocity, int relYVelocity, int speed) {
         this.xVelocity = relXVelocity;
         this.yVelocity = relYVelocity;
+        this.speed = speed;
     }
 
     /**
@@ -29,7 +30,7 @@ public class Direction {
     public int getDegrees() {
 
         if (xVelocity == 0) {
-            return yVelocity < 0 ? VERTICAL_DOWN : VERTICAL_UP;
+            return yVelocity < 0 ? VERTICAL_UP : VERTICAL_DOWN;
         }
         if (yVelocity == 0) {
             return xVelocity < 0 ? HORIZONTAL_LEFT : HORIZONTAL_RIGHT;
@@ -52,12 +53,8 @@ public class Direction {
         return xVelocity;
     }
 
-    public void setRelXVelocity(int velocity){
+    public void setRelXVelocity(int velocity) {
         xVelocity = velocity;
-    }
-
-    public void setRelYVelocity(int velocity){
-        yVelocity = velocity;
     }
 
     public int getRelYVelocity() {
@@ -65,4 +62,23 @@ public class Direction {
         return yVelocity;
     }
 
+    public void setRelYVelocity(int velocity) {
+        yVelocity = velocity;
+    }
+
+    public int getXVelocity() {
+        return (int) (speed * Math.cos(Math.toRadians(getDegrees())));
+    }
+
+    public int getYVelocity() {
+        return (int) (speed * Math.sin(Math.toRadians(getDegrees())));
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 }

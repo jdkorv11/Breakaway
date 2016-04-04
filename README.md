@@ -31,7 +31,7 @@ To gain experience with game development principles and have fun in the process
   - [ ] Shrink bumper
   - [ ] Speed up ball
 - [ ] Player can catch lives and power-ups with bumper
-- [ ] Ball speed & direction can be changed by bumper movement 
+- [ ] Ball speed & vector can be changed by bumper movement
 
 **Menus**
 - [ ] Game launches to Main Menu

@@ -1,19 +1,21 @@
 package korver.breakaway.engine;
 
 import korver.breakaway.engine.display.GameDisplay;
-import korver.breakaway.engine.input.KeyboardInput;
 import korver.breakaway.logic.Game;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 /**
  * Created by jdkorv11 on 3/28/2016.
  */
-public class Application extends JFrame {
+public class Application extends JFrame implements WindowListener {
 
     public static final long NANOSECONDS_PER_SECOND = 1000000000;
     private static final int DEFAULT_FPS = 60;
+    private static Loop gameLoop;
     private GameDisplay gameView;
 
     public Application(Game game) {
@@ -26,9 +28,9 @@ public class Application extends JFrame {
         this.setResizable(true);
         this.setVisible(true);
 
-        this.addKeyListener(new KeyboardInput(game.getInputHandler()));
-        gameView.addMouseMotionListener(game.getInputHandler());
-
+        this.addWindowListener(this);
+        this.addMouseListener(game.getInputHandler().getInputReader());
+        this.addKeyListener(game.getInputHandler().getInputReader());
     }
 
     public static void main(String args[]) {
@@ -40,7 +42,7 @@ public class Application extends JFrame {
 
         Game game = new Game();
         Application app = new Application(game);
-        Loop gameLoop = new Loop(period, app, game);
+        gameLoop = new Loop(period, app, game);
         gameLoop.startGame();
 
         System.out.println("fps: " + fps + "; period: " + period + " ms");
@@ -54,4 +56,37 @@ public class Application extends JFrame {
         gameView.paintScreen();
     }
 
+    @Override
+    public void windowOpened(WindowEvent windowEvent) {
+    }
+
+    @Override
+    public void windowClosing(WindowEvent windowEvent) {
+        gameLoop.stopGame();
+    }
+
+    @Override
+    public void windowClosed(WindowEvent windowEvent) {
+        gameLoop.stopGame();
+    }
+
+    @Override
+    public void windowIconified(WindowEvent windowEvent) {
+        gameLoop.pauseGame();
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent windowEvent) {
+        gameLoop.resumeGame();
+    }
+
+    @Override
+    public void windowActivated(WindowEvent windowEvent) {
+        gameLoop.resumeGame();
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent windowEvent) {
+        gameLoop.pauseGame();
+    }
 }

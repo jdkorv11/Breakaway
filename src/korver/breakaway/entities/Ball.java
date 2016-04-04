@@ -1,6 +1,6 @@
 package korver.breakaway.entities;
 
-import korver.breakaway.physics.Direction;
+import korver.breakaway.physics.Vector;
 
 import java.awt.*;
 
@@ -10,30 +10,27 @@ import java.awt.*;
 public class Ball extends Rectangle {
 
     private final int BALL_SIZE = 20;
-    private Direction direction;
-    private int speed;
+    private Vector vector;
 
     public Ball(Point location) {
         super(location);
         this.setSize(new Dimension(BALL_SIZE, BALL_SIZE));
-        direction = new Direction(0, 0);
-        speed = 0;
+        vector = new Vector(0, 0, 0);
     }
 
-    public Direction getDirection() {
-        return direction;
+    public Vector getVector() {
+        return vector;
     }
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+    public void setVector(Vector vector) {
+        this.vector = vector;
     }
 
     public int getSpeed() {
-        return speed;
+        return vector.getSpeed();
     }
 
     public void setSpeed(int speed) {
-        this.speed = speed;
+        vector.setSpeed(speed);
     }
-
 }

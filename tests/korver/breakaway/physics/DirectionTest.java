@@ -20,15 +20,15 @@ public class DirectionTest {
         int south = -90;
         int southEast = -45;
 
-        Direction dEast = new Direction(1,0);
-        Direction dNorthEast = new Direction(1,1);
-        Direction dNorth = new Direction(0,1);
-        Direction dNorthWest = new Direction(-1,1);
-        Direction dWest = new Direction(-1,0);
-        Direction dSouthWest = new Direction(-1,-1);
-        Direction dSouth = new Direction(0,-1);
-        Direction dSouthEast = new Direction(1,-1);
-        Direction dZeroZero = new Direction (0,0);
+        Vector dEast = new Vector(1, 0,0);
+        Vector dNorthEast = new Vector(1, 1,0);
+        Vector dNorth = new Vector(0, 1,0);
+        Vector dNorthWest = new Vector(-1, 1,0);
+        Vector dWest = new Vector(-1, 0,0);
+        Vector dSouthWest = new Vector(-1, -1,0);
+        Vector dSouth = new Vector(0, -1,0);
+        Vector dSouthEast = new Vector(1, -1,0);
+        Vector dZeroZero = new Vector(0, 0,0);
 
         assertEquals(east, dEast.getDegrees());
         assertEquals(northEast, dNorthEast.getDegrees());
@@ -47,8 +47,8 @@ public class DirectionTest {
         byte x1 = 5;
         byte x2 = -2;
         byte y = 3;
-        Direction d1 = new Direction(x1, y);
-        Direction d2 = new Direction(x2, y);
+        Vector d1 = new Vector(x1, y,0);
+        Vector d2 = new Vector(x2, y,0);
         assertEquals(x1, d1.getRelXVelocity());
         assertEquals(x2, d2.getRelXVelocity());
     }
@@ -58,8 +58,8 @@ public class DirectionTest {
         byte y1 = 5;
         byte y2 = -2;
         byte x = 3;
-        Direction d1 = new Direction(x, y1);
-        Direction d2 = new Direction(x, y2);
+        Vector d1 = new Vector(x, y1,0);
+        Vector d2 = new Vector(x, y2,0);
         assertEquals(y1, d1.getRelYVelocity());
         assertEquals(y2, d2.getRelYVelocity());
     }
