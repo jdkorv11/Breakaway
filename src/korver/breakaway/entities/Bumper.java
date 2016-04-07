@@ -8,7 +8,7 @@ import java.awt.*;
 public class Bumper extends Rectangle{
 
     private final int HEIGHT = 15;
-    private final int WIDTH = 75;
+    private final int WIDTH = 100;
     public boolean hasBall = false;
 
     public Bumper(Point location) {

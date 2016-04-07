@@ -62,31 +62,42 @@ public class Application extends JFrame implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent windowEvent) {
-        gameLoop.stopGame();
+        if (gameLoop != null) {
+            gameLoop.stopGame();
+        }
     }
 
     @Override
     public void windowClosed(WindowEvent windowEvent) {
-        gameLoop.stopGame();
+        if (gameLoop != null) {
+            gameLoop.stopGame();
+        }
     }
 
     @Override
     public void windowIconified(WindowEvent windowEvent) {
-        gameLoop.pauseGame();
+        if (gameLoop != null) {
+            gameLoop.pauseGame();
+        }
     }
 
     @Override
     public void windowDeiconified(WindowEvent windowEvent) {
-        gameLoop.resumeGame();
-    }
+        if (gameLoop != null) {
+            gameLoop.resumeGame();
+        }    }
 
     @Override
     public void windowActivated(WindowEvent windowEvent) {
-        gameLoop.resumeGame();
+        if (gameLoop != null) {
+            gameLoop.resumeGame();
+        }
     }
 
     @Override
     public void windowDeactivated(WindowEvent windowEvent) {
-        gameLoop.pauseGame();
+        if (gameLoop != null) {
+            gameLoop.pauseGame();
+        }
     }
 }

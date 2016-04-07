@@ -18,6 +18,7 @@ public class Game {
     private final int WALL_THICKNESS = 20;
     private final int BUMPER_SPEED_LIMIT = 20;
     private final int DEFAULT_BALL_SPEED = 10;
+    private final int OFF_SCREEN_MARGIN = 50;
     private final Bumper bumper;
     private final Ball ball;
     private final InputHandler inputHandler;
@@ -32,20 +33,33 @@ public class Game {
                                      (int) (BOARD_HEIGHT - bumper.getHeight())));
         //create a ball and place it on the bumper
         ball = new Ball(testPoint);
-        ball.setLocation(
-                new Point(bumper.x + (bumper.width / 2) - ball.width / 2, bumper.y - (int) (ball.height * 0.9)));
-        bumper.hasBall = true;
+        initializeBall();
 
     }
 
+    private void initializeBall() {
+        ball.setLocation(
+                new Point(bumper.x + (bumper.width / 2) - ball.width / 2, bumper.y - (int) (ball.height * 0.9)));
+        ball.setSpeed(0);
+        bumper.hasBall = true;
+    }
+
     public void update() {
-        if (inputHandler.isBumperMove()) {
-            submitBumperMove(inputHandler.consumeBumperMove());
+        if (isAlive()) {
+            if (inputHandler.isBumperMove()) {
+                submitBumperMove(inputHandler.consumeBumperMove());
+            }
+            if (inputHandler.isLaunchQueued()) {
+                attemptBallLaunch();
+            }
+            processBallMove();
+        } else {
+            initializeBall();
         }
-        if (inputHandler.isLaunchQueued()) {
-            attemptBallLaunch();
-        }
-        moveBall();
+    }
+
+    private boolean isAlive() {
+        return ball.y < BOARD_HEIGHT + OFF_SCREEN_MARGIN;
     }
 
     private void attemptBallLaunch() {
@@ -58,26 +72,23 @@ public class Game {
     private void launchBall() {
         // get a random direction for the ball
         int xVel;
-        int xVel1 = Utilities.randomWithRange(-4, -2);
-        int xVel2 = Utilities.randomWithRange(2, 4);
+        int xVel1 = Utilities.randomWithRange(-5, -2);
+        int xVel2 = Utilities.randomWithRange(2, 5);
         int xVelSelector = Utilities.randomWithRange(1, 2);
         if (xVelSelector == 1) {
             xVel = xVel1;
         } else {
             xVel = xVel2;
         }
-        int yVel = Utilities.randomWithRange(-5, -1);
-        // set the direction to the ball
-        ball.getVector().setRelXVelocity(xVel);
-        ball.getVector().setRelYVelocity(yVel);
-        //set the ball's speed
-        ball.setSpeed(DEFAULT_BALL_SPEED);
+        int yVel = Utilities.randomWithRange(-5, -2);
+        // set the ball's vector
+        ball.setVector(new Vector(xVel, yVel, DEFAULT_BALL_SPEED));
 
         // remove ball from bumper
         bumper.hasBall = false;
     }
 
-    private void moveBall() {
+    private void processBallMove() {
         int dx = ball.getVector().getXVelocity();
         int dy = ball.getVector().getYVelocity();
 
@@ -85,7 +96,25 @@ public class Game {
             reflectBallOffWall(dx, dy);
         } else if (willCollide(ball, dx, dy, bumper)) {
             reflectBallOffObject(dx, dy, bumper);
-        } else {
+        }
+        moveBall();
+    }
+
+    private void moveBall() {
+        ball.x += ball.getVector().getXVelocity();
+        ball.y += ball.getVector().getYVelocity();
+    }
+
+    private void reflectBallOffBumper() {
+        // reflect the ball
+        int dx = ball.getVector().getXVelocity();
+        int dy = ball.getVector().getYVelocity();
+        reflectBallOffObject(dx, dy, bumper);
+
+        // prevent deadlock by moving the ball up so the next step will not collide with the bumper
+        dy = ball.getVector().getYVelocity();
+        dx = ball.getVector().getXVelocity();
+        while (!bumper.hasBall && willCollide(ball, dx, dy, bumper)) {
             ball.x += dx;
             ball.y += dy;
         }
@@ -93,10 +122,11 @@ public class Game {
 
     private void reflectBallOffObject(int dx, int dy, Rectangle rectangle) {
         Vector ballDir = ball.getVector();
-        if (willCollide(ball, dx, 0, rectangle)) {
+        boolean collidesNow = willCollide(ball, 0, 0, rectangle);
+        if (willCollide(ball, dx, 0, rectangle) && !collidesNow) {
             dx = dx * -1;
         }
-        if (willCollide(ball, 0, dy, rectangle)) {
+        if (willCollide(ball, 0, dy, rectangle) && !collidesNow) {
             dy = dy * -1;
         }
         ballDir.setRelXVelocity(dx);
@@ -114,8 +144,6 @@ public class Game {
         }
         ballDir.setRelXVelocity(dx);
         ballDir.setRelYVelocity(dy);
-//        ball.x += dx;
-//        ball.y += dy;
     }
 
     /**
@@ -141,11 +169,11 @@ public class Game {
     }
 
     public int getHeight() {
-        return BOARD_HEIGHT;// WALL_THICKNESS + BOARD_HEIGHT;
+        return BOARD_HEIGHT;
     }
 
     public int getWidth() {
-        return BOARD_WIDTH;// WALL_THICKNESS + BOARD_WIDTH + WALL_THICKNESS;
+        return BOARD_WIDTH;
     }
 
     public int getWallThickness() {

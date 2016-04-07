@@ -156,6 +156,7 @@ public class Loop implements Runnable {
                 gameUpdate(); // update state but don't render
                 skips++;
             }
+            excess = 0;
             framesSkipped += skips;
 
             storeStats();
