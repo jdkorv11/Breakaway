@@ -93,9 +93,10 @@ public class Game {
         int dy = ball.getVector().getYVelocity();
 
         if (willCollideWithWall(ball, dx, dy)) {
-            reflectBallOffWall(dx, dy);
-        } else if (willCollide(ball, dx, dy, bumper)) {
-            reflectBallOffObject(dx, dy, bumper);
+            reflectBallOffWall();
+        }
+        if (willCollide(ball, dx, dy, bumper)) {
+            reflectBallOffBumper();
         }
         moveBall();
     }
@@ -134,16 +135,16 @@ public class Game {
 
     }
 
-    private void reflectBallOffWall(int dx, int dy) {
+    private void reflectBallOffWall() {
         Vector ballDir = ball.getVector();
+        int dx = ballDir.getXVelocity();
+        int dy = ballDir.getYVelocity();
         if (willHitLeftWall(ball, dx) || willHitRightWall(ball, dx)) {
-            dx = -1 * dx;
+            ballDir.setRelXVelocity(-1 * ballDir.getRelXVelocity());
         }
         if (willHitTopWall(ball, dy)) {
-            dy = -1 * dy;
+            ballDir.setRelYVelocity(-1 * ballDir.getRelYVelocity());
         }
-        ballDir.setRelXVelocity(dx);
-        ballDir.setRelYVelocity(dy);
     }
 
     /**

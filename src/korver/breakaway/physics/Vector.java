@@ -67,11 +67,11 @@ public class Vector {
     }
 
     public int getXVelocity() {
-        return (int) (speed * Math.cos(Math.toRadians(getDegrees())));
+        return (int) Math.round(speed * Math.cos(Math.toRadians(getDegrees())));
     }
 
     public int getYVelocity() {
-        return (int) (speed * Math.sin(Math.toRadians(getDegrees())));
+        return (int) Math.round(speed * Math.sin(Math.toRadians(getDegrees())));
     }
 
     public int getSpeed() {
