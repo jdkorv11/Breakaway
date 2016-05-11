@@ -2,11 +2,13 @@ package korver.breakaway.logic;
 
 import korver.breakaway.engine.Utilities;
 import korver.breakaway.entities.Ball;
+import korver.breakaway.entities.Block;
 import korver.breakaway.entities.Bumper;
 import korver.breakaway.physics.Vector;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.List;
 
 /**
  * Created by jdkorv11 on 3/28/2016.
@@ -17,31 +19,52 @@ public class Game {
     private final int BOARD_HEIGHT = 840;
     private final int WALL_THICKNESS = 20;
     private final int BUMPER_SPEED_LIMIT = 20;
-    private final int DEFAULT_BALL_SPEED = 10;
+    private final int DEFAULT_BALL_SPEED = 3;
     private final int OFF_SCREEN_MARGIN = 50;
-    private final Bumper bumper;
-    private final Ball ball;
     private final InputHandler inputHandler;
+    private GameState gameState;
     private Point testPoint = new Point(0, 0);
 
-    public Game() {
-        inputHandler = new InputHandler();
 
-        // create a bumper and center it on the bottom of the board
-        bumper = new Bumper(testPoint);
-        bumper.setLocation(new Point((int) ((BOARD_WIDTH / 2) - (bumper.getWidth() / 2)),
-                                     (int) (BOARD_HEIGHT - bumper.getHeight())));
-        //create a ball and place it on the bumper
-        ball = new Ball(testPoint);
+    public Game() {
+        gameState = new GameState();
+        inputHandler = new InputHandler();
+        // create a gameState.bumper and center it on the bottom of the board
+        gameState.bumper = new Bumper(testPoint);
+        gameState.bumper.setLocation(new Point((int) ((BOARD_WIDTH / 2) - (gameState.bumper.getWidth() / 2)),
+                                               (int) (BOARD_HEIGHT - gameState.bumper.getHeight())));
+        //create a ball and place it on the gameState.bumper
+        initializeBlocks();
         initializeBall();
 
     }
 
+    private void initializeBlocks() {
+        int y = 0;
+        int x = 0;
+        Block b = new Block(0, 0);
+        List<Block> blockList = gameState.blockList;
+        while (x < BOARD_WIDTH) {
+            b = new Block(x, y);
+            blockList.add(b);
+            x = x + (b.width * 2);
+        }
+        x = b.width;
+        y = b.height * 2;
+        while (x < BOARD_WIDTH) {
+            b = new Block(x, y);
+            blockList.add(b);
+            x = x + (b.width * 2);
+        }
+    }
+
     private void initializeBall() {
-        ball.setLocation(
-                new Point(bumper.x + (bumper.width / 2) - ball.width / 2, bumper.y - (int) (ball.height * 0.9)));
-        ball.setSpeed(0);
-        bumper.hasBall = true;
+        gameState.ball = new Ball(testPoint);
+        gameState.ball.setLocation(
+                new Point(gameState.bumper.x + (gameState.bumper.width / 2) - gameState.ball.width / 2,
+                          gameState.bumper.y - (int) (gameState.ball.height * 0.9)));
+        gameState.ball.setSpeed(0);
+        gameState.bumper.hasBall = true;
     }
 
     public void update() {
@@ -59,12 +82,12 @@ public class Game {
     }
 
     private boolean isAlive() {
-        return ball.y < BOARD_HEIGHT + OFF_SCREEN_MARGIN;
+        return gameState.ball.y < BOARD_HEIGHT + OFF_SCREEN_MARGIN;
     }
 
     private void attemptBallLaunch() {
-        // verify the ball is on the bumper and launch if it is
-        if (bumper.hasBall) {
+        // verify the ball is on the gameState.bumper and launch if it is
+        if (gameState.bumper.hasBall) {
             launchBall();
         }
     }
@@ -82,52 +105,52 @@ public class Game {
         }
         int yVel = Utilities.randomWithRange(-5, -2);
         // set the ball's vector
-        ball.setVector(new Vector(xVel, yVel, DEFAULT_BALL_SPEED));
+        gameState.ball.setVector(new Vector(xVel, yVel, DEFAULT_BALL_SPEED));
 
-        // remove ball from bumper
-        bumper.hasBall = false;
+        // remove ball from gameState.bumper
+        gameState.bumper.hasBall = false;
     }
 
     private void processBallMove() {
-        int dx = ball.getVector().getXVelocity();
-        int dy = ball.getVector().getYVelocity();
+        int dx = gameState.ball.getVector().getXVelocity();
+        int dy = gameState.ball.getVector().getYVelocity();
 
-        if (willCollideWithWall(ball, dx, dy)) {
+        if (willCollideWithWall(gameState.ball, dx, dy)) {
             reflectBallOffWall();
         }
-        if (willCollide(ball, dx, dy, bumper)) {
+        if (willCollide(gameState.ball, dx, dy, gameState.bumper)) {
             reflectBallOffBumper();
         }
         moveBall();
     }
 
     private void moveBall() {
-        ball.x += ball.getVector().getXVelocity();
-        ball.y += ball.getVector().getYVelocity();
+        gameState.ball.x += gameState.ball.getVector().getXVelocity();
+        gameState.ball.y += gameState.ball.getVector().getYVelocity();
     }
 
     private void reflectBallOffBumper() {
         // reflect the ball
-        int dx = ball.getVector().getXVelocity();
-        int dy = ball.getVector().getYVelocity();
-        reflectBallOffObject(dx, dy, bumper);
+        int dx = gameState.ball.getVector().getXVelocity();
+        int dy = gameState.ball.getVector().getYVelocity();
+        reflectBallOffObject(dx, dy, gameState.bumper);
 
-        // prevent deadlock by moving the ball up so the next step will not collide with the bumper
-        dy = ball.getVector().getYVelocity();
-        dx = ball.getVector().getXVelocity();
-        while (!bumper.hasBall && willCollide(ball, dx, dy, bumper)) {
-            ball.x += dx;
-            ball.y += dy;
+        // prevent deadlock by moving the ball up so the next step will not collide with the gameState.bumper
+        dy = gameState.ball.getVector().getYVelocity();
+        dx = gameState.ball.getVector().getXVelocity();
+        while (!gameState.bumper.hasBall && willCollide(gameState.ball, dx, dy, gameState.bumper)) {
+            gameState.ball.x += dx;
+            gameState.ball.y += dy;
         }
     }
 
     private void reflectBallOffObject(int dx, int dy, Rectangle rectangle) {
-        Vector ballDir = ball.getVector();
-        boolean collidesNow = willCollide(ball, 0, 0, rectangle);
-        if (willCollide(ball, dx, 0, rectangle) && !collidesNow) {
+        Vector ballDir = gameState.ball.getVector();
+        boolean collidesNow = willCollide(gameState.ball, 0, 0, rectangle);
+        if (willCollide(gameState.ball, dx, 0, rectangle) && !collidesNow) {
             dx = dx * -1;
         }
-        if (willCollide(ball, 0, dy, rectangle) && !collidesNow) {
+        if (willCollide(gameState.ball, 0, dy, rectangle) && !collidesNow) {
             dy = dy * -1;
         }
         ballDir.setRelXVelocity(dx);
@@ -136,13 +159,13 @@ public class Game {
     }
 
     private void reflectBallOffWall() {
-        Vector ballDir = ball.getVector();
+        Vector ballDir = gameState.ball.getVector();
         int dx = ballDir.getXVelocity();
         int dy = ballDir.getYVelocity();
-        if (willHitLeftWall(ball, dx) || willHitRightWall(ball, dx)) {
+        if (willHitLeftWall(gameState.ball, dx) || willHitRightWall(gameState.ball, dx)) {
             ballDir.setRelXVelocity(-1 * ballDir.getRelXVelocity());
         }
-        if (willHitTopWall(ball, dy)) {
+        if (willHitTopWall(gameState.ball, dy)) {
             ballDir.setRelYVelocity(-1 * ballDir.getRelYVelocity());
         }
     }
@@ -163,7 +186,7 @@ public class Game {
     private boolean willCollide(Rectangle projectile, int dx, int dy, Rectangle object) {
         projectile.x += dx;
         projectile.y += dy;
-        boolean collides = ball.intersects(object);
+        boolean collides = projectile.intersects(object);
         projectile.x -= dx;
         projectile.y -= dy;
         return collides;
@@ -182,11 +205,11 @@ public class Game {
     }
 
     public Bumper getBumper() {
-        return bumper;
+        return gameState.bumper;
     }
 
     public Ball getBall() {
-        return ball;
+        return gameState.ball;
     }
 
     public void submitBumperMove(int move) {
@@ -196,18 +219,18 @@ public class Game {
             move = BUMPER_SPEED_LIMIT;
         }
 
-        testPoint.x = bumper.x + move;
-        testPoint.y = bumper.y;
+        testPoint.x = gameState.bumper.x + move;
+        testPoint.y = gameState.bumper.y;
 
-        while (testPoint.x != bumper.x) {
-            if (!willCollideWithWall(bumper, move, 0)) {
-                bumper.x = bumper.x + move;
-                if (bumper.hasBall) {
-                    ball.x = ball.x + move;
+        while (testPoint.x != gameState.bumper.x) {
+            if (!willCollideWithWall(gameState.bumper, move, 0)) {
+                gameState.bumper.x = gameState.bumper.x + move;
+                if (gameState.bumper.hasBall) {
+                    gameState.ball.x = gameState.ball.x + move;
                 }
             } else {
                 move = shrinkStep(move);
-                testPoint.x = bumper.x + move;
+                testPoint.x = gameState.bumper.x + move;
             }
         }
 
@@ -242,5 +265,9 @@ public class Game {
 
     public InputHandler getInputHandler() {
         return inputHandler;
+    }
+
+    public List<Block> getBlocks() {
+        return gameState.blockList;
     }
 }

@@ -1,10 +1,13 @@
 package korver.breakaway.engine.display;
 
 import korver.breakaway.entities.Ball;
+import korver.breakaway.entities.Block;
 import korver.breakaway.entities.Bumper;
 import korver.breakaway.logic.Game;
 
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by jdkorv11 on 3/28/2016.
@@ -26,8 +29,16 @@ public class DrawingUtils {
         // draw the walls
         //drawWalls(graphics, gameHeight, gameWidth, wallThickness);
         // draw the bumper
+        drawBlocks(graphics, game.getBlocks());
         drawBumper(graphics, game.getBumper());
         drawBall(graphics, game.getBall());
+    }
+
+    private void drawBlocks(Graphics graphics, List<Block> blocks) {
+        graphics.setColor(Color.BLUE);
+        for (Block block: blocks){
+            graphics.fillRect(block.x, block.y, block.width, block.height);
+        }
     }
 
     private void drawBall(Graphics graphics, Ball ball) {

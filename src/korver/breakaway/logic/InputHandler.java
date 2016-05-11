@@ -3,7 +3,6 @@ package korver.breakaway.logic;
 import korver.breakaway.engine.input.InputReader;
 import korver.breakaway.physics.Vector;
 
-import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
@@ -85,7 +84,7 @@ public class InputHandler {
             launchQueued = false;
             return true;
         }
-        return launchQueued;
+        return false;
     }
 
     public void keyReleased(int keyCode) {

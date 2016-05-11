@@ -7,11 +7,10 @@ import java.awt.*;
  */
 public class Block extends Rectangle {
 
-    private final int HEIGHT = 20;
-    private final int WIDTH = 60;
+    private static final int DEFAULT_HEIGHT = 20;
+    private static final int DEFAULT_WIDTH = 60;
 
-    public Block(Point location) {
-        super(location);
-        super.setSize(new Dimension(WIDTH, HEIGHT));
+    public Block(int x, int y){
+        super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 }
