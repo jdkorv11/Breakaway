@@ -2,6 +2,7 @@ package korver.breakaway.engine;
 
 import korver.breakaway.engine.display.GameDisplay;
 import korver.breakaway.logic.Game;
+import korver.breakaway.logic.GameState;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
@@ -17,6 +18,7 @@ public class Application extends JFrame implements WindowListener {
     private static final int DEFAULT_FPS = 60;
     private static Loop gameLoop;
     private GameDisplay gameView;
+    private GameState renderState = new GameState();
 
     public Application(Game game) {
         super("Breakaway");
@@ -49,7 +51,8 @@ public class Application extends JFrame implements WindowListener {
     }
 
     public void renderGame(Game game) {
-        gameView.renderGame(game);
+        renderState = game.getState().mimic(renderState);
+        gameView.renderGame(game.getState());
     }
 
     public void paintScreen() {

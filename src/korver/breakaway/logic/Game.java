@@ -8,6 +8,7 @@ import korver.breakaway.physics.Vector;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,31 +16,38 @@ import java.util.List;
  */
 public class Game {
 
+    private static final int STARTING_LIVES = 3;
     private final int BOARD_WIDTH = 1500;
     private final int BOARD_HEIGHT = 840;
     private final int WALL_THICKNESS = 20;
     private final int BUMPER_SPEED_LIMIT = 20;
-    private final int DEFAULT_BALL_SPEED = 3;
+    private final int DEFAULT_BALL_SPEED = 10;
     private final int OFF_SCREEN_MARGIN = 50;
     private final InputHandler inputHandler;
     private GameState gameState;
     private Point testPoint = new Point(0, 0);
+    private List<Block> hitBlocks = new ArrayList();
 
 
     public Game() {
         gameState = new GameState();
         inputHandler = new InputHandler();
         // create a gameState.bumper and center it on the bottom of the board
+        initializeGameState();
+    }
+    public Game(GameState gameState){
+        this.gameState = gameState;
+        inputHandler = new InputHandler();
+    }
+
+    private void initializeGameState() {
+
+        // initialize bumper
         gameState.bumper = new Bumper(testPoint);
         gameState.bumper.setLocation(new Point((int) ((BOARD_WIDTH / 2) - (gameState.bumper.getWidth() / 2)),
                                                (int) (BOARD_HEIGHT - gameState.bumper.getHeight())));
-        //create a ball and place it on the gameState.bumper
-        initializeBlocks();
-        initializeBall();
-
-    }
-
-    private void initializeBlocks() {
+        gameState.livesLeft = STARTING_LIVES;
+        // initialize blocks
         int y = 0;
         int x = 0;
         Block b = new Block(0, 0);
@@ -56,6 +64,30 @@ public class Game {
             blockList.add(b);
             x = x + (b.width * 2);
         }
+        // initialize ball
+        initializeBall();
+
+
+    }
+
+
+    public void update() {
+        if (isEndOfLevel()) {
+            endGame();
+            return;
+        }
+        if (isAlive()) {
+            if (inputHandler.isBumperMove()) {
+                submitBumperMove(inputHandler.consumeBumperMove());
+            }
+            if (inputHandler.isLaunchQueued()) {
+                attemptBallLaunch();
+            }
+            processBallMove();
+        } else {
+            looseLife();
+            initializeBall();
+        }
     }
 
     private void initializeBall() {
@@ -67,18 +99,16 @@ public class Game {
         gameState.bumper.hasBall = true;
     }
 
-    public void update() {
-        if (isAlive()) {
-            if (inputHandler.isBumperMove()) {
-                submitBumperMove(inputHandler.consumeBumperMove());
-            }
-            if (inputHandler.isLaunchQueued()) {
-                attemptBallLaunch();
-            }
-            processBallMove();
-        } else {
-            initializeBall();
-        }
+    private void looseLife() {
+        gameState.livesLeft--;
+    }
+
+    private void endGame() {
+        inputHandler.getInputReader().unlockMouse();
+    }
+
+    private boolean isEndOfLevel() {
+        return gameState.blockList.size() == 0 || gameState.livesLeft < 0;
     }
 
     private boolean isAlive() {
@@ -121,7 +151,25 @@ public class Game {
         if (willCollide(gameState.ball, dx, dy, gameState.bumper)) {
             reflectBallOffBumper();
         }
+        for (Block block : gameState.blockList) {
+            if (willCollide(gameState.ball, dx, dy, block)) {
+                reflectBallOffObject(dx, dy, block);
+                recordHit(block);
+            }
+        }
+        fatigueHitBlocks();
         moveBall();
+    }
+
+    private void recordHit(Block block) {
+        hitBlocks.add(block);
+    }
+
+    private void fatigueHitBlocks() {
+        while (hitBlocks.size() > 0) {
+            gameState.blockList.remove(hitBlocks.get(0));
+            hitBlocks.remove(0);
+        }
     }
 
     private void moveBall() {
@@ -269,5 +317,9 @@ public class Game {
 
     public List<Block> getBlocks() {
         return gameState.blockList;
+    }
+
+    public GameState getState() {
+        return this.gameState;
     }
 }

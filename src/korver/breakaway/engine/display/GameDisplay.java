@@ -1,6 +1,7 @@
 package korver.breakaway.engine.display;
 
 import korver.breakaway.logic.Game;
+import korver.breakaway.logic.GameState;
 
 import javax.swing.JPanel;
 import java.awt.*;
@@ -37,7 +38,7 @@ public class GameDisplay extends JPanel {
         setIgnoreRepaint(true);
     }
 
-    public void renderGame(Game game) {
+    public void renderGame(GameState game) {
         if (bufferImage == null) {
             bufferImage = createImage(gameWidth, gameHeight);
             if (bufferImage == null) {

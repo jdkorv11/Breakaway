@@ -4,6 +4,7 @@ import korver.breakaway.entities.Ball;
 import korver.breakaway.entities.Block;
 import korver.breakaway.entities.Bumper;
 import korver.breakaway.logic.Game;
+import korver.breakaway.logic.GameState;
 
 import java.awt.*;
 import java.util.*;
@@ -21,17 +22,15 @@ public class DrawingUtils {
      * @param game the game to be drawn
      * @param graphics the graphics to draw the game to
      */
-    void drawGame(Game game, Graphics graphics) {
+    void drawGame(GameState game, Graphics graphics) {
         // get wall and game dimensions
-        int gameHeight = game.getHeight();
-        int gameWidth = game.getWidth();
-        int wallThickness = game.getWallThickness();
+
         // draw the walls
         //drawWalls(graphics, gameHeight, gameWidth, wallThickness);
         // draw the bumper
-        drawBlocks(graphics, game.getBlocks());
-        drawBumper(graphics, game.getBumper());
-        drawBall(graphics, game.getBall());
+        drawBlocks(graphics, game.blockList);
+        drawBumper(graphics, game.bumper);
+        drawBall(graphics, game.ball);
     }
 
     private void drawBlocks(Graphics graphics, List<Block> blocks) {
