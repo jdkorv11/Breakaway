@@ -66,8 +66,6 @@ public class Game {
         }
         // initialize ball
         initializeBall();
-
-
     }
 
 
@@ -90,8 +88,11 @@ public class Game {
         }
     }
 
+    /**
+     * Centers the gameState.ball on the gameState.bumper with 0 speed and sets gameState.bumper.hasBall=true
+     */
     private void initializeBall() {
-        gameState.ball = new Ball(testPoint);
+        //gameState.ball = new Ball(testPoint);
         gameState.ball.setLocation(
                 new Point(gameState.bumper.x + (gameState.bumper.width / 2) - gameState.ball.width / 2,
                           gameState.bumper.y - (int) (gameState.ball.height * 0.9)));
@@ -107,7 +108,7 @@ public class Game {
         inputHandler.getInputReader().unlockMouse();
     }
 
-    private boolean isEndOfLevel() {
+    protected boolean isEndOfLevel() {
         return gameState.blockList.size() == 0 || gameState.livesLeft < 0;
     }
 
@@ -313,10 +314,6 @@ public class Game {
 
     public InputHandler getInputHandler() {
         return inputHandler;
-    }
-
-    public List<Block> getBlocks() {
-        return gameState.blockList;
     }
 
     public GameState getState() {
